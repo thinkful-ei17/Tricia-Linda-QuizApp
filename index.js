@@ -2,32 +2,67 @@
 'use strict';
 
 const listQUESTIONS = [{
-  question: 'In what year were the Cleveland Browns established?',
-  a1: '1946',
-  a2: '1963',
-  a3: '1952',
-  a4: '1950',
-  answer: "a1",
-  comment: 'The correct answer is 1946.   Paul Brown, who was once called the \'father of modern football\', was the team\'s namesake and first coach. From the beginning of play in 1946 at Cleveland Municipal Stadium, the Browns were a great success'
+  question: 'What is the largest land animal in the world?',
+  a1: 'Elephant',
+  a2: 'Human',
+  a3: 'Hippo',
+  a4: 'Dinosaur',
+  answer: 'Elephant',
+  comment: function() {
+    return this.al;
+  },
 },
 {
-  nameQuestion: 'Question 2',
-  textQuestion: 'textstring',
-  textOptions: 'optionstring',
-  textAnswer: 'answerstring',
+  question: 'Groups of lions are known as what?',
+  a1: 'Gangs',
+  a2: 'Packs',
+  a3: 'Pride',
+  a4: 'Herd',
+  answer: this.a3,
+  comment: function() {
+    return this.a3;
+  }
 },
-{
-  nameQuestion: 'Question 3',
-  textQuestion: 'textstring',
-  textOptions: 'optionstring',
-  textAnswer: 'answerstring',
-}
+  /*
+                        {
+                            question: 'What is the fastest land animal in the world?',
+                            a1: 'Leopard',
+                            a2: 'Cheetah',
+                            a3: 'Elephant',
+                            a4: 'Iganua',
+                            answer: 'a2',
+                            comment: 'The correct answer is: '
+                            a2
+                        },
+                        {
+                            question: 'What can cats see that humans cannot?',
+                            a1: 'Ghosts',
+                            a2: 'Dust',
+                            a3: 'Sound',
+                            a4: 'Ultraviolet light',
+                            answer: 'a4',
+                            comment: 'The correct answer is: '
+                            a4
+                        },
+                        {
+                            question: 'How many hours can a puppy sleep a day?',
+                            a1: '5 to 20 hours',
+                            a2: '10 to 15 hours',
+                            a3: '18 to 20 hours',
+                            a4: '24 hours',
+                            answer: 'a3',
+                            comment: 'The correct answer is: '
+                            a3
+                        }
+                        }
+                        */
 ];
 
 const STORE = {
   index: 0,
   numberOfQuestions: listQUESTIONS.length,
   currentCorrectNum: 0,
+  startQuiz: false,
 };
 //if app switch statement - start, question, answer, result
 //current state of start; then run start app
@@ -65,6 +100,7 @@ function startApp() {
     $('h2').remove();
     //event.currentTarget.closest
     $('.start').remove();
+    STORE.startQuiz = true;
     displayQuestion();
   });
 }
@@ -76,6 +112,8 @@ function displayQuestion() {
   let currentQuestion = questionTemplate();
   $('.question').html(currentQuestion);
   $('.buttons').append('<button class="submit">Submit</button>');
+  $('.next').remove();
+
   displayStatus();
 
 }
@@ -84,21 +122,42 @@ function displayQuestion() {
 //display correctly answered
 
 function displayStatus() {
-  $('.status').append(`<p> ${STORE.index + 1} out of ${STORE.numberOfQuestions} </p>`);
-  $('.status').append(`<p> ${STORE.currentCorrectNum} correct, ${STORE.numberOfQuestions} total </p>`);
+  $('.status').append(`<p> ${STORE.index+1} out ${STORE.numberOfQuestions} </p>`);
+  $('.status').append(`<p> ${STORE.currentCorrectNum} correct, ${STORE.numberOfQuestions} </p>`);
   handleAnswerClick();
 }
 
 function handleAnswerClick() {
-  $('.submit').click( event => { 
+  $('.submit').click(event => {
     let answer = $('input[name="answer"]:checked').val();
     console.log('we clicked the submit button');
     console.log(answer);
     if (answer === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
-  }
-  );
+    console.log(STORE.currentCorrectNum);
+    $('.buttons').append('<button class="next">Next</button>');
+    $('form').remove();
+    $('.status').remove();
+    $('.question').append(listQUESTIONS[STORE.index].comment === answer ? 'Congratulations, your answer is correct' : 'the correct answer is: ', listQUESTIONS[STORE.index].answer);
+    $('.submit').remove();
+    displayStatus();
+    handleNextClick();
+  });
 }
+
+function handleNextClick() {
+  //show the answer
+  //show status
+  $('.next').click(event => {
+    STORE.index += 1;
+
+    displayQuestion();
+
+
+  });
+
+}
+
 
 startApp();
