@@ -7,7 +7,7 @@ const listQUESTIONS = [{
   a2: '1963',
   a3: '1952',
   a4: '1950',
-  answer: 'A1',
+  answer: "a1",
   comment: 'The correct answer is 1946.   Paul Brown, who was once called the \'father of modern football\', was the team\'s namesake and first coach. From the beginning of play in 1946 at Cleveland Municipal Stadium, the Browns were a great success'
 },
 {
@@ -26,7 +26,8 @@ const listQUESTIONS = [{
 
 const STORE = {
   index: 0,
-
+  numberOfQuestions: listQUESTIONS.length,
+  currentCorrectNum: 0,
 };
 //if app switch statement - start, question, answer, result
 //current state of start; then run start app
@@ -38,24 +39,23 @@ function questionTemplate() {
   <div>
   <p class= "questionTitle">${listQUESTIONS[STORE.index].question}</p>
     <input type="radio" id="Choice1"
-     name="contact" value="a1">
-    <label for="contactChoice1">${listQUESTIONS[STORE.index].a1}</label>
+     name="answer" value="a1">
+    <label for="answerChoice1">${listQUESTIONS[STORE.index].a1}</label>
 
     <input type="radio" id="Choice2"
-     name="contact" value="a2">
-    <label for="contactChoice2">${listQUESTIONS[STORE.index].a2}</label>
+    name="answer" value="a2">
+   <label for="answerChoice1">${listQUESTIONS[STORE.index].a2}</label>
 
     <input type="radio" id="Choice3"
-     name="contact" value="a3">
-    <label for="contactChoice3">${listQUESTIONS[STORE.index].a3}</label>
+    name="answer" value="a3">
+    <label for="answerChoice1">${listQUESTIONS[STORE.index].a3}</label>
 
     <input type="radio" id="Choice4"
-    name="contact" value="a4">
-   <label for="contactChoice3">${listQUESTIONS[STORE.index].a4}</label>
+    name="answer" value="a4">
+  <label for="answerChoice1">${listQUESTIONS[STORE.index].a4}</label>
   </div>
 </form>`;
 }
-
 
 function startApp() {
   $('.start').on('click', function(event) {
@@ -76,8 +76,29 @@ function displayQuestion() {
   let currentQuestion = questionTemplate();
   $('.question').html(currentQuestion);
   $('.buttons').append('<button class="submit">Submit</button>');
+  displayStatus();
 
+}
 
+//display current status
+//display correctly answered
+
+function displayStatus() {
+  $('.status').append(`<p> ${STORE.index + 1} out of ${STORE.numberOfQuestions} </p>`);
+  $('.status').append(`<p> ${STORE.currentCorrectNum} correct, ${STORE.numberOfQuestions} total </p>`);
+  handleAnswerClick();
+}
+
+function handleAnswerClick() {
+  $('.submit').click( event => { 
+    let answer = $('input[name="answer"]:checked').val();
+    console.log('we clicked the submit button');
+    console.log(answer);
+    if (answer === listQUESTIONS[STORE.index].answer) {
+      STORE.currentCorrectNum += 1;
+    }
+  }
+  );
 }
 
 startApp();
