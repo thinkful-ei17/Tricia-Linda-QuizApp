@@ -96,7 +96,7 @@ function questionTemplate() {
 function statusTemplate() {
   console.log('Enter statusTemplate index = ', STORE.index);
   return `<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions}  total questions.</p><p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`;
-}
+} //STORE.currentCorrectNum is adding index to currentCorrectNum
 
 function resultTemplate(input) {
   if (listQUESTIONS[STORE.index].answer === input) {
@@ -185,13 +185,13 @@ function handleSubmitClick() {
     let clickResponse = $('input[name="answer"]:checked').val();
 
     if (clickResponse === listQUESTIONS[STORE.index].answer) {
-      STORE.currentCorrectNum += 1;
+      STORE.currentCorrectNum += 1; 
     }
     console.log(`Total correct answers =  ${STORE.currentCorrectNum}`);
-
+    
     displayResults(clickResponse);
     displayStatus();
-
+    
     STORE.view = 'answer';
     renderPage();
 
