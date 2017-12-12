@@ -9,7 +9,7 @@ const listQUESTIONS = [{
   a4: 'Dinosaur',
   answer: 'a1',
   comment: function() {
-    return this.al;
+    return (this.al);
   },
 },
 {
@@ -20,7 +20,7 @@ const listQUESTIONS = [{
   a4: 'Herd',
   answer: 'a3',
   comment: function() {
-    return this.a3;
+    return (this.a3);
   }
 },
 
@@ -32,7 +32,7 @@ const listQUESTIONS = [{
   a4: 'Iganua',
   answer: 'a2',
   comment: function() {
-    return this.a2;
+    return (this.a2);
   }
 },
 {
@@ -43,7 +43,7 @@ const listQUESTIONS = [{
   a4: 'Ultraviolet light',
   answer: 'a4',
   comment: function() {
-    return this.a4;
+    return (this.a4);
   }
 },
 {
@@ -54,7 +54,7 @@ const listQUESTIONS = [{
   a4: '24 hours',
   answer: '18 to 20 hours',
   comment: function() {
-    return this.a3;
+    return (this.a3);
   }
 }
 
@@ -134,17 +134,18 @@ function handleAnswerClick() {
   $('.submit').click(event => {
     let answer = $('input[name="answer"]:checked').val();
 
-    console.log(`User selected answer: 
-            ${answer}`);
+    console.log(`User selected answer: ${answer}`);
     if (answer === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
-    console.log(`The current correct answers are: 
-            ${STORE.currentCorrectNum}`);
+    console.log(`The current correct answers are: ${STORE.currentCorrectNum}`);
+
+    $('.question').append(listQUESTIONS[STORE.index].answer === answer ? '<p>Congratulations, your answer is correct</p>' : '<p>the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
+
+
     $('.buttons').append('<button class="next">Next</button>');
     $('form').remove();
     $('.status').remove();
-    $('.question').append(listQUESTIONS[STORE.index].comment === answer ? 'Congratulations, your answer is correct' : 'the correct answer is: ', listQUESTIONS[STORE.index].comment);
     $('.submit').remove();
     displayStatus();
     handleNextClick();
@@ -158,7 +159,7 @@ function handleNextClick() {
     console.log('User hit the Next button');
     STORE.index += 1;
     displayQuestion();
-    displayStatus();
+
 
 
   });
