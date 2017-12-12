@@ -93,26 +93,63 @@ function questionTemplate() {
 </form>`;
 }
 
+function renderPage() {
+  console.log('we begin with', STORE.view);
+  if (STORE.view === 'start') {
+    $('h1').show();
+    $('h2').show();
+    $('.start').show();
+    $('.question').hide();
+    $('.status').hide();
+    $('.submit').hide();
+    $('.remove').hide();
+    $('.next').hide();
+    $('.form').hide();
+    console.log('we are in start view', STORE.view);
+  } else if (STORE.view === 'question') {
+    $('h1').hide();
+    $('h2').hide();
+    $('.start').hide();
+    $('.question').show();
+    $('.status').show();
+    $('.submit').show();
+    $('.next').hide();
+    $('.form').show();
+  } else if (STORE.view === 'status') {
+    $('h1').hide();
+    $('h2').hide();
+    $('.start').hide();
+    $('.question').hide();
+    $('.status').show();
+    $('.submit').hide();
+    $('.next').show();
+    $('.form').hide();
+  }  
+}
+
 function startApp() {
   $('.start').on('click', function(event) {
     console.log('testStart');
     event.preventDefault();
-    STORE.view = 'question';
+    STORE.view = 'start';
     renderPage();
+    displayQuestion();
   });
 }
 
 function displayQuestion() {
   //display the question and 4 answers
   //display the SUBMIT button
-  console.log('Entered displayQuestion');
 
+  console.log('Entered displayQuestion');
+  STORE.view = 'question';
   let currentQuestion = questionTemplate();
   $('.question').html(currentQuestion);
-
-  STORE.view = 'status';
-
+  //add submit button
+  $('.buttons').append('<button class="submit">Submit</button>');
+  
   renderPage();
+  handleAnswerClick();
 
 }
 
@@ -123,58 +160,44 @@ function displayStatus() {
   console.log('Entered displayStatus');
   $('.status').append(`<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions} </p> total questions.`);
   $('.status').append(`<p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`);
-  handleAnswerClick();
+
+  renderPage();
 }
 
-function renderPage() {
-  if (STORE.view === 'start') {
-    $('h1').show();
-    $('h2').show();
-    $('.start').show();
-  } else if (STORE.view === 'question') {
-    $('h1').hide();
-    $('h2').hide();
-    $('.start').hide();
-    displayQuestion();
-  } else if (STORE.view === 'status') {
-    $('.buttons').append('<button class="submit">Submit</button>');
-    $('.next').remove();
-    displayStatus();
-  }
-}
+
 
 function handleAnswerClick() {
   $('.submit').click(event => {
-    let answer = $('input[name="answer"]:checked').val();
+    let clickResponse = $('input[name="answer"]:checked').val();
 
-    console.log(`User selected answer: ${answer}`);
-    if (answer === listQUESTIONS[STORE.index].answer) {
+    console.log(`User selected answer: ${clickResponse}`);
+    if (clickResponse === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
     console.log(`The current correct answers are: ${STORE.currentCorrectNum}`);
-
-    $('.question').append(listQUESTIONS[STORE.index].answer === answer ? '<p>Congratulations, your answer is correct</p>' : '<p>Your answer is incorrect, the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
-
-
-    $('.buttons').append('<button class="next">Next</button>');
-    $('form').remove();
-
-    $('.submit').remove();
-
+    STORE.view === 'status';
+    renderPage();
     handleNextClick();
+    displayResults(clickResponse);
+    
   });
+}
+
+function displayResults(input){
+
+  $('.question').append(listQUESTIONS[STORE.index].answer === input ? '<p>Congratulations, your answer is correct</p>' : '<p>Your answer is incorrect, the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
+  $('.buttons').append('<button class="next">Next</button>');
 }
 
 function handleNextClick() {
   //show the answer
   //show status
+  
   $('.next').click(event => {
     console.log('User hit the Next button');
     STORE.index += 1;
     displayQuestion();
-
-
-
+    STORE.view === 'question';
   });
 
 }
