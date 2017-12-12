@@ -61,6 +61,7 @@ const listQUESTIONS = [{
 const STORE = {
   index: 0,
   numberOfQuestions: listQUESTIONS.length,
+  questionNum: 1,
   currentCorrectNum: 0,
   startQuiz: false,
   view: 'start',
@@ -95,10 +96,11 @@ function questionTemplate() {
 
 function statusTemplate() {
   console.log('Enter statusTemplate index = ', STORE.index);
-  return `<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions}  total questions.</p><p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`;
+  return `<p> You have completed ${STORE.questionNum} out of ${STORE.numberOfQuestions}  total questions.</p><p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`;
 }
 
 function resultTemplate(input) {
+  console.log('Enter resultTemplate index = ', STORE.index);
   if (listQUESTIONS[STORE.index].answer === input) {
     return '<p>Congratulations, your answer is correct</p>';
   } else {
@@ -108,7 +110,7 @@ function resultTemplate(input) {
 }
 
 function renderPage() {
-  console.log('Enter renderPage, View = ', STORE.view);
+
   if (STORE.view === 'start') {
     $('h1').show();
     $('h2').show();
@@ -141,16 +143,18 @@ function renderPage() {
 }
 
 function startApp() {
-  $('.start').on('click', function(event) {
-    console.log('Enter startApp');
-    event.preventDefault();
+  handleSubmitClick();
+  handleNextClick();
 
+  $('body').on('click', '.start', function(event) {
+    event.preventDefault();
     $('.buttons').append('<button class="submit">Submit</button>');
     $('.buttons').append('<button class="next">Next</button>');
     STORE.view = 'start';
     renderPage();
     displayQuestion();
   });
+
 }
 
 function displayQuestion() {
@@ -158,14 +162,16 @@ function displayQuestion() {
   //display the SUBMIT button
 
   console.log('Entered displayQuestion');
+  console.log('DisplayQuestion index = ', STORE.index);
+  if (STORE.index <= STORE.numberOfQuestions) {
+    let currentQuestion = questionTemplate();
+    $('.question').html(currentQuestion);
+    STORE.view = 'question';
+    renderPage();
+  }
 
-  let currentQuestion = questionTemplate();
-  $('.question').html(currentQuestion);
 
-  STORE.view = 'question';
-  renderPage();
 
-  handleSubmitClick();
 
 }
 
@@ -181,24 +187,29 @@ function displayStatus() {
 
 function handleSubmitClick() {
   console.log('Enter handleSumitClick');
-  $('.submit').click(event => {
+  $('body').on('click', '.submit', event => {
     let clickResponse = $('input[name="answer"]:checked').val();
+
+    console.log('The index is = ', STORE.index);
+    console.log('What is the listQuestion answer:', listQUESTIONS[STORE.index].answer);
+    console.log('The clickResponse is = ', clickResponse);
 
     if (clickResponse === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
-    console.log(`Total correct answers =  ${STORE.currentCorrectNum}`);
+    console.log(`HandleSubmit, Total correct answers =  ${STORE.currentCorrectNum}`);
 
     displayResults(clickResponse);
     displayStatus();
 
+    STORE.index += 1;
+    STORE.questionNum += 1;
+    console.log('EnterSubmitClick, increment index =', STORE.index);
     STORE.view = 'answer';
     renderPage();
 
-    handleNextClick();
-
-
   });
+
 }
 
 function displayResults(input) {
@@ -212,14 +223,9 @@ function handleNextClick() {
   //show the answer
   //show answer
 
-  $('.next').click(event => {
-    console.log('Enter handleNextClick index = ',
-      STORE.index);
-
-    STORE.index += 1;
-
+  $('body').on('click', '.next', event => {
+    console.log('Enter handleNextClick index = ', STORE.index);
     displayQuestion();
-
   });
 
 }
