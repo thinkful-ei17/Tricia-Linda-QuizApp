@@ -7,7 +7,7 @@ const listQUESTIONS = [{
   a2: 'Human',
   a3: 'Hippo',
   a4: 'Dinosaur',
-  answer: 'Elephant',
+  answer: 'a1',
   comment: function() {
     return this.al;
   },
@@ -18,44 +18,47 @@ const listQUESTIONS = [{
   a2: 'Packs',
   a3: 'Pride',
   a4: 'Herd',
-  answer: this.a3,
+  answer: 'a3',
   comment: function() {
     return this.a3;
   }
 },
-  /*
-                        {
-                            question: 'What is the fastest land animal in the world?',
-                            a1: 'Leopard',
-                            a2: 'Cheetah',
-                            a3: 'Elephant',
-                            a4: 'Iganua',
-                            answer: 'a2',
-                            comment: 'The correct answer is: '
-                            a2
-                        },
-                        {
-                            question: 'What can cats see that humans cannot?',
-                            a1: 'Ghosts',
-                            a2: 'Dust',
-                            a3: 'Sound',
-                            a4: 'Ultraviolet light',
-                            answer: 'a4',
-                            comment: 'The correct answer is: '
-                            a4
-                        },
-                        {
-                            question: 'How many hours can a puppy sleep a day?',
-                            a1: '5 to 20 hours',
-                            a2: '10 to 15 hours',
-                            a3: '18 to 20 hours',
-                            a4: '24 hours',
-                            answer: 'a3',
-                            comment: 'The correct answer is: '
-                            a3
-                        }
-                        }
-                        */
+
+{
+  question: 'What is the fastest land animal in the world?',
+  a1: 'Leopard',
+  a2: 'Cheetah',
+  a3: 'Elephant',
+  a4: 'Iganua',
+  answer: 'a2',
+  comment: function() {
+    return this.a2;
+  }
+},
+{
+  question: 'What can cats see that humans cannot?',
+  a1: 'Ghosts',
+  a2: 'Dust',
+  a3: 'Sound',
+  a4: 'Ultraviolet light',
+  answer: 'a4',
+  comment: function() {
+    return this.a4;
+  }
+},
+{
+  question: 'How many hours can a puppy sleep a day?',
+  a1: '5 to 20 hours',
+  a2: '10 to 15 hours',
+  a3: '18 to 20 hours',
+  a4: '24 hours',
+  answer: '18 to 20 hours',
+  comment: function() {
+    return this.a3;
+  }
+}
+
+
 ];
 
 const STORE = {
@@ -122,24 +125,26 @@ function displayQuestion() {
 //display correctly answered
 
 function displayStatus() {
-  $('.status').append(`<p> ${STORE.index+1} out ${STORE.numberOfQuestions} </p>`);
-  $('.status').append(`<p> ${STORE.currentCorrectNum} correct, ${STORE.numberOfQuestions} </p>`);
+  $('.status').append(`<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions} </p> total questions.`);
+  $('.status').append(`<p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`);
   handleAnswerClick();
 }
 
 function handleAnswerClick() {
   $('.submit').click(event => {
     let answer = $('input[name="answer"]:checked').val();
-    console.log('we clicked the submit button');
-    console.log(answer);
+
+    console.log(`User selected answer: 
+            ${answer}`);
     if (answer === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
-    console.log(STORE.currentCorrectNum);
+    console.log(`The current correct answers are: 
+            ${STORE.currentCorrectNum}`);
     $('.buttons').append('<button class="next">Next</button>');
     $('form').remove();
     $('.status').remove();
-    $('.question').append(listQUESTIONS[STORE.index].comment === answer ? 'Congratulations, your answer is correct' : 'the correct answer is: ', listQUESTIONS[STORE.index].answer);
+    $('.question').append(listQUESTIONS[STORE.index].comment === answer ? 'Congratulations, your answer is correct' : 'the correct answer is: ', listQUESTIONS[STORE.index].comment);
     $('.submit').remove();
     displayStatus();
     handleNextClick();
@@ -150,9 +155,10 @@ function handleNextClick() {
   //show the answer
   //show status
   $('.next').click(event => {
+    console.log('User hit the Next button');
     STORE.index += 1;
-
     displayQuestion();
+    displayStatus();
 
 
   });
