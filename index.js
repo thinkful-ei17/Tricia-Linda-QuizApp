@@ -63,7 +63,6 @@ const STORE = {
   numberOfQuestions: listQUESTIONS.length,
   questionNum: 1,
   currentCorrectNum: 0,
-  startQuiz: false,
   view: 'start',
 };
 //if app switch statement - start, question, answer, result
@@ -140,12 +139,22 @@ function renderPage() {
     $('.next').show();
     $('.form').hide();
   }
+  else if (STORE.view === 'restart') {
+    $('h1').show();
+    $('h2').show();
+    $('.start').show();
+    $('.question').hide();
+    $('.status').hide();
+    $('.submit').hide();
+    $('.remove').hide();
+    $('.next').hide();
+    $('.form').hide();
+  }
 }
 
 function startApp() {
   handleSubmitClick();
   handleNextClick();
-
   $('body').on('click', '.start', function(event) {
     event.preventDefault();
     $('.buttons').append('<button class="submit">Submit</button>');
@@ -153,27 +162,38 @@ function startApp() {
     STORE.view = 'start';
     renderPage();
     displayQuestion();
-  });
+  }
+  );
+}     
+  
 
-}
+
 
 function displayQuestion() {
   //display the question and 4 answers
   //display the SUBMIT button
+  console.log('This index before we begin is:', STORE.index);
+  console.log('THe number of question or length is:', STORE.numberOfQuestions);
 
-  console.log('Entered displayQuestion');
-  console.log('DisplayQuestion index = ', STORE.index);
-  if (STORE.index <= STORE.numberOfQuestions) {
+  if (STORE.index < STORE.numberOfQuestions) {
+    console.log('Entered displayQuestion');
+    console.log('DisplayQuestion index = ', STORE.index);
     let currentQuestion = questionTemplate();
     $('.question').html(currentQuestion);
     STORE.view = 'question';
     renderPage();
   }
-
-
-
+  else {
+    console.log('entered else statment');
+    STORE.index = 0;
+    STORE.questionNum = 1;
+    STORE.currentCorrectNum = 0;
+    STORE.view = 'restart';
+    renderPage();
+  }
 
 }
+
 
 //display current answer
 //display correctly answered
