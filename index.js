@@ -10,7 +10,7 @@ const listQUESTIONS = [{
   answer: 'a1',
   comment: function() {
     return (this.al);
-  },
+  }
 },
 {
   question: 'Groups of lions are known as what?',
@@ -23,7 +23,6 @@ const listQUESTIONS = [{
     return (this.a3);
   }
 },
-
 {
   question: 'What is the fastest land animal in the world?',
   a1: 'Leopard',
@@ -52,13 +51,11 @@ const listQUESTIONS = [{
   a2: '10 to 15 hours',
   a3: '18 to 20 hours',
   a4: '24 hours',
-  answer: '18 to 20 hours',
+  answer: 'a3',
   comment: function() {
     return (this.a3);
   }
 }
-
-
 ];
 
 const STORE = {
@@ -66,6 +63,7 @@ const STORE = {
   numberOfQuestions: listQUESTIONS.length,
   currentCorrectNum: 0,
   startQuiz: false,
+  view: 'start',
 };
 //if app switch statement - start, question, answer, result
 //current state of start; then run start app
@@ -99,25 +97,22 @@ function startApp() {
   $('.start').on('click', function(event) {
     console.log('testStart');
     event.preventDefault();
-    $('h1').remove();
-    $('h2').remove();
-    //event.currentTarget.closest
-    $('.start').remove();
-    STORE.startQuiz = true;
-    displayQuestion();
+    STORE.view = 'question';
+    renderPage();
   });
 }
 
 function displayQuestion() {
   //display the question and 4 answers
   //display the SUBMIT button
+  console.log('Entered displayQuestion');
 
   let currentQuestion = questionTemplate();
   $('.question').html(currentQuestion);
-  $('.buttons').append('<button class="submit">Submit</button>');
-  $('.next').remove();
 
-  displayStatus();
+  STORE.view = 'status';
+
+  renderPage();
 
 }
 
@@ -125,9 +120,27 @@ function displayQuestion() {
 //display correctly answered
 
 function displayStatus() {
+  console.log('Entered displayStatus');
   $('.status').append(`<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions} </p> total questions.`);
   $('.status').append(`<p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`);
   handleAnswerClick();
+}
+
+function renderPage() {
+  if (STORE.view === 'start') {
+    $('h1').show();
+    $('h2').show();
+    $('.start').show();
+  } else if (STORE.view === 'question') {
+    $('h1').hide();
+    $('h2').hide();
+    $('.start').hide();
+    displayQuestion();
+  } else if (STORE.view === 'status') {
+    $('.buttons').append('<button class="submit">Submit</button>');
+    $('.next').remove();
+    displayStatus();
+  }
 }
 
 function handleAnswerClick() {
@@ -140,14 +153,14 @@ function handleAnswerClick() {
     }
     console.log(`The current correct answers are: ${STORE.currentCorrectNum}`);
 
-    $('.question').append(listQUESTIONS[STORE.index].answer === answer ? '<p>Congratulations, your answer is correct</p>' : '<p>the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
+    $('.question').append(listQUESTIONS[STORE.index].answer === answer ? '<p>Congratulations, your answer is correct</p>' : '<p>Your answer is incorrect, the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
 
 
     $('.buttons').append('<button class="next">Next</button>');
     $('form').remove();
-    $('.status').remove();
+
     $('.submit').remove();
-    displayStatus();
+
     handleNextClick();
   });
 }
