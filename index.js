@@ -2,7 +2,7 @@
 'use strict';
 
 const listQUESTIONS = [{
-  question: 'What is the largest land animal in the world?',
+  question: 'Question 1: What is the largest land animal in the world?',
   a1: 'Elephant',
   a2: 'Human',
   a3: 'Hippo',
@@ -13,7 +13,7 @@ const listQUESTIONS = [{
   }
 },
 {
-  question: 'Groups of lions are known as what?',
+  question: 'Question 2: Groups of lions are known as what?',
   a1: 'Gangs',
   a2: 'Packs',
   a3: 'Pride',
@@ -24,7 +24,7 @@ const listQUESTIONS = [{
   }
 },
 {
-  question: 'What is the fastest land animal in the world?',
+  question: 'Question 3: What is the fastest land animal in the world?',
   a1: 'Leopard',
   a2: 'Cheetah',
   a3: 'Elephant',
@@ -35,7 +35,7 @@ const listQUESTIONS = [{
   }
 },
 {
-  question: 'What can cats see that humans cannot?',
+  question: 'Question 4: What can cats see that humans cannot?',
   a1: 'Ghosts',
   a2: 'Dust',
   a3: 'Sound',
@@ -46,7 +46,7 @@ const listQUESTIONS = [{
   }
 },
 {
-  question: 'How many hours can a puppy sleep a day?',
+  question: 'Question 5: How many hours can a puppy sleep a day?',
   a1: '5 to 20 hours',
   a2: '10 to 15 hours',
   a3: '18 to 20 hours',
@@ -93,8 +93,22 @@ function questionTemplate() {
 </form>`;
 }
 
+function statusTemplate() {
+  console.log('Enter statusTemplate index = ', STORE.index);
+  return `<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions}  total questions.</p><p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`;
+}
+
+function resultTemplate(input) {
+  if (listQUESTIONS[STORE.index].answer === input) {
+    return '<p>Congratulations, your answer is correct</p>';
+  } else {
+    return `<p>Your answer is incorrect, the correct answer is: ${listQUESTIONS[STORE.index].answer}</p>`;
+  }
+
+}
+
 function renderPage() {
-  console.log('we begin with', STORE.view);
+  console.log('Enter renderPage, View = ', STORE.view);
   if (STORE.view === 'start') {
     $('h1').show();
     $('h2').show();
@@ -105,17 +119,16 @@ function renderPage() {
     $('.remove').hide();
     $('.next').hide();
     $('.form').hide();
-    console.log('we are in start view', STORE.view);
   } else if (STORE.view === 'question') {
     $('h1').hide();
     $('h2').hide();
     $('.start').hide();
     $('.question').show();
-    $('.status').show();
+    $('.status').hide();
     $('.submit').show();
     $('.next').hide();
     $('.form').show();
-  } else if (STORE.view === 'status') {
+  } else if (STORE.view === 'answer') {
     $('h1').hide();
     $('h2').hide();
     $('.start').hide();
@@ -124,13 +137,16 @@ function renderPage() {
     $('.submit').hide();
     $('.next').show();
     $('.form').hide();
-  }  
+  }
 }
 
 function startApp() {
   $('.start').on('click', function(event) {
-    console.log('testStart');
+    console.log('Enter startApp');
     event.preventDefault();
+
+    $('.buttons').append('<button class="submit">Submit</button>');
+    $('.buttons').append('<button class="next">Next</button>');
     STORE.view = 'start';
     renderPage();
     displayQuestion();
@@ -142,65 +158,71 @@ function displayQuestion() {
   //display the SUBMIT button
 
   console.log('Entered displayQuestion');
-  STORE.view = 'question';
+
   let currentQuestion = questionTemplate();
   $('.question').html(currentQuestion);
-  //add submit button
-  $('.buttons').append('<button class="submit">Submit</button>');
-  
+
+  STORE.view = 'question';
   renderPage();
-  handleAnswerClick();
+
+  handleSubmitClick();
 
 }
 
-//display current status
+//display current answer
 //display correctly answered
-
 function displayStatus() {
   console.log('Entered displayStatus');
-  $('.status').append(`<p> You have completed ${STORE.index+1} out of ${STORE.numberOfQuestions} </p> total questions.`);
-  $('.status').append(`<p> You have answered ${STORE.currentCorrectNum} correct, out of ${STORE.numberOfQuestions} total questions</p>`);
+  let status = statusTemplate();
+  $('.status').html(status);
 
-  renderPage();
 }
 
 
-
-function handleAnswerClick() {
+function handleSubmitClick() {
+  console.log('Enter handleSumitClick');
   $('.submit').click(event => {
     let clickResponse = $('input[name="answer"]:checked').val();
 
-    console.log(`User selected answer: ${clickResponse}`);
     if (clickResponse === listQUESTIONS[STORE.index].answer) {
       STORE.currentCorrectNum += 1;
     }
-    console.log(`The current correct answers are: ${STORE.currentCorrectNum}`);
-    STORE.view === 'status';
-    renderPage();
-    handleNextClick();
+    console.log(`Total correct answers =  ${STORE.currentCorrectNum}`);
+
     displayResults(clickResponse);
-    
+    displayStatus();
+
+    STORE.view = 'answer';
+    renderPage();
+
+    handleNextClick();
+
+
   });
 }
 
-function displayResults(input){
+function displayResults(input) {
+  console.log('Enter displayResults');
+  let results = resultTemplate(input);
+  $('.status').html(results);
 
-  $('.question').append(listQUESTIONS[STORE.index].answer === input ? '<p>Congratulations, your answer is correct</p>' : '<p>Your answer is incorrect, the correct answer is: </p>', listQUESTIONS[STORE.index].comment());
-  $('.buttons').append('<button class="next">Next</button>');
 }
 
 function handleNextClick() {
   //show the answer
-  //show status
-  
+  //show answer
+
   $('.next').click(event => {
-    console.log('User hit the Next button');
+    console.log('Enter handleNextClick index = ',
+      STORE.index);
+
     STORE.index += 1;
+
     displayQuestion();
-    STORE.view === 'question';
+
   });
 
 }
 
 
-startApp();
+$(startApp());
