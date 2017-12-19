@@ -17,7 +17,7 @@ const listQuestions = [
     option_two: 'Packs',
     option_three: 'Pride',
     option_four: 'Herd',
-    answer_option: 'option_two',
+    answer_option: 'option_three',
     answer_text: 'Pride',
   },
   {
@@ -99,6 +99,10 @@ function resultTemplate(feedback) {
   }
 }
 
+function startButtonTemplate() {
+  return '<button class="start">Start</button>';
+}
+
 function submitButtonTemplate() {
   return '<button class="submit">Submit</button>';
 }
@@ -106,10 +110,6 @@ function submitButtonTemplate() {
 function nextButtonTemplate() {
   return '<button class="next">Next</button>';
 }
-
-//$('.buttons').append('<button class="submit">Submit</button>'); //move to template
-//$('.buttons').append('<button class="next">Next</button>'); //move to template
-
 
 function renderPage() { 
 
@@ -161,6 +161,7 @@ function renderPage() {
 }
 
 function startApp() {
+  $('.buttons').html(startButtonTemplate);
   handleSubmitClick();
   handleNextClick();
   handleStartClick();
@@ -169,7 +170,7 @@ function startApp() {
 function handleStartClick() {
   $('body').on('click', '.start', function(event) {
     event.preventDefault();
-   
+    $('.buttons').html(submitButtonTemplate);
     STORE.view = 'start';
     renderPage();
   }
@@ -186,7 +187,7 @@ function handleSubmitClick() {
 
     displayResults(clickResponse);
     displayStatus();
-
+    $('.buttons').html(nextButtonTemplate);
     STORE.questionNum += 1;
     STORE.questionCount += 1;
     STORE.view = 'answer';
@@ -207,6 +208,7 @@ function displayQuestion() {
   if (STORE.questionNum < STORE.numberOfQuestions) {
     let currentQuestion = questionTemplate();
     $('.question').html(currentQuestion);
+    $('.buttons').html(submitButtonTemplate);
     STORE.view = 'question';
     renderPage();
   } 
@@ -214,6 +216,7 @@ function displayQuestion() {
     STORE.questionNum = 0; 
     STORE.questionCount = 1;
     STORE.currentCorrectCount = 0;
+    $('.buttons').html(startButtonTemplate);
     STORE.view = 'restart';
     renderPage();
   }
